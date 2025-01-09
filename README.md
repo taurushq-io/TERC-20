@@ -1,8 +1,13 @@
 ## TERC-20
 
-[TOC]
+This project contains two basic ERC-20 tokens:
 
-This smart contract implements a basic ERC-20 token with the following characteristics:
+- `TERC20Standalone` for an immutable deployment, without proxy
+- `TERC20Upgradeable` for an upgradeable deployment, with a compatible proxy (Transparent or Beacon)
+
+## Common characteristics
+
+These ERC-20 tokens have the following characteristics:
 
 **Mint**
 
@@ -20,14 +25,6 @@ This smart contract implements a basic ERC-20 token with the following character
 - At deployment, the issuer can set the name, symbol and decimals.
 
 - Once deployed, it is no longer possible to modify these values except via an upgrade in the case of the proxy.
-
-**Details**
-
-- The smart contract uses the library OpenZeppepelin, the solidity version 0.8.27 and an access control.
-
-- Code is written with Foundry. with several tests to check that everything is good.
-
-
 
 ## Schema
 
