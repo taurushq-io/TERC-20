@@ -3,6 +3,13 @@ pragma solidity ^0.8.28;
 import "OZ/token/ERC20/IERC20.sol";
 import "OZ/access/IAccessControl.sol";
 abstract contract TERC20Share is IERC20, IAccessControl {
+    /** 
+    * @notice 
+    * Get the current version of the smart contract
+    */
+    string public constant VERSION = "0.1.0";
+
+    /* ============ Access Control ============ */
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 

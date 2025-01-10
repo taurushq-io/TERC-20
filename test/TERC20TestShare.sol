@@ -45,16 +45,11 @@ contract TERC20TestShare is Test {
     error Mint_AccountsValueslengthMismatch();
 
     /*//////////////////////////////////////////////////////////////
-                    Deployment
+                        VERSION
     //////////////////////////////////////////////////////////////*/
-
-    /*function testShareDeployment() internal {
-        // Verify the name change
-       assertEq(IERC20Custom(token).name(), testName);
-       assertEq(IERC20Custom(token).symbol(), testSymbol);
-     assertEq(IERC20Custom(token).decimals(), testDecimals);
-    }*/
-
+    function testShareVersion() internal view{
+        assertEq(token.VERSION(), "0.1.0");
+    }
     /*//////////////////////////////////////////////////////////////
                           MINT
     //////////////////////////////////////////////////////////////*/
