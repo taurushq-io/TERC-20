@@ -6,9 +6,8 @@ import "../src/TERC20Standalone.sol";
 import "./TERC20TestShare.sol";
 
 contract TERC20TestStandalone is Test, TERC20TestShare {
-
-    function setUp() public{
-       token = new TERC20Standalone(admin, testName, testSymbol, testDecimals);
+    function setUp() public {
+        token = new TERC20Standalone(admin, testName, testSymbol, testDecimals);
     }
     /*//////////////////////////////////////////////////////////////
                           MINT
@@ -16,13 +15,15 @@ contract TERC20TestStandalone is Test, TERC20TestShare {
 
     function testMint() public {
         TERC20TestShare.testShareCanMint();
-        
     }
 
     function testMintBatch() public {
         TERC20TestShare.testShareCanMintBatch();
     }
 
+    function testMintBatchSingleValue() public {
+        TERC20TestShare.testShareCanMintBatchSingleValue();
+    }
 
     /*//////////////////////////////////////////////////////////////
                            BURN
@@ -36,6 +37,10 @@ contract TERC20TestStandalone is Test, TERC20TestShare {
         TERC20TestShare.testShareCanBurnBatch();
     }
 
+    function testBurnBatchSingleValue() public {
+        TERC20TestShare.testShareCanBurnBatchSingleValue();
+    }
+
     /*//////////////////////////////////////////////////////////////
                            Access Control
     //////////////////////////////////////////////////////////////*/
@@ -47,7 +52,6 @@ contract TERC20TestStandalone is Test, TERC20TestShare {
     function testAttackerCannotMintAndMintBatch() public {
         TERC20TestShare.testShareAttackerCannotMintAndMintBatch();
     }
-
 
     /*//////////////////////////////////////////////////////////////
                           Invalid Parameters
@@ -64,7 +68,12 @@ contract TERC20TestStandalone is Test, TERC20TestShare {
                         Deployment
     //////////////////////////////////////////////////////////////*/
     function testTERC20StandaloneDeployment() public {
-        TERC20Standalone TERC20 = new TERC20Standalone(admin, testName, testSymbol, testDecimals);
+        TERC20Standalone TERC20 = new TERC20Standalone(
+            admin,
+            testName,
+            testSymbol,
+            testDecimals
+        );
         assertEq(TERC20.decimals(), testDecimals);
         assertEq(TERC20.name(), testName);
         assertEq(TERC20.symbol(), testSymbol);

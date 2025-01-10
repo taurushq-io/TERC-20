@@ -66,6 +66,19 @@ contract TERC20Upgradeable is
     }
 
     /* ============ Mint ============ */
+    /**
+     * @notice  Creates a `value` amount of tokens and assigns them to `account`, by transferring it from address(0)
+     * @param account token receiver
+     * @param value amount of tokens
+     * @dev
+     * See {OpenZeppelin ERC20-_mint}.
+     * Emits a {Mint} event.
+     * Emits a {Transfer} event with `from` set to the zero address (emits inside _mint).
+     *
+     * Requirements:
+     * - `account` cannot be the zero address (check made by _mint).
+     * - The caller must have the `MINTER_ROLE`.
+     */
     function mint(
         address account,
         uint256 value
@@ -74,6 +87,17 @@ contract TERC20Upgradeable is
         emit Mint(msg.sender, account, value);
     }
 
+    /**
+     *
+     * @notice batch version of {mint}
+     * @dev
+     * Emits a {MintBatch} event.
+     * Requirements:
+     * - `accounts` cannot be empty
+     * - `accounts` and `values` must have the same length
+     * - `accounts` cannot contain a zero address (check made by _mint).
+     * - the caller must have the `MINTER_ROLE`.
+     */
     function mintBatch(
         address[] calldata accounts,
         uint256[] calldata values
@@ -92,7 +116,39 @@ contract TERC20Upgradeable is
         emit MintBatch(msg.sender, accounts, values);
     }
 
+    /**
+     *
+     * @notice batch version of {mint}
+     * @dev
+     * Emits a {MintBatch} event.
+     * Requirements:
+     * - `accounts` cannot be empty
+     * - `accounts` cannot contain a zero address (check made by _mint).
+     * - the caller must have the `MINTER_ROLE`.
+     */
+    function mintBatch(
+        address[] calldata accounts,
+        uint256 value
+    ) public override onlyRole(MINTER_ROLE) {
+        require(accounts.length != 0, Mint_EmptyAccounts());
+        for (uint256 i = 0; i < accounts.length; ++i) {
+            _mint(accounts[i], value);
+        }
+        emit MintBatch(msg.sender, accounts, value);
+    }
+
     /* ============ Burn ============ */
+    /**
+     * @notice Destroys a `value` amount of tokens from `account`, by transferring it to address(0).
+     * @param account token holder
+     * @param value amount of tokens to burn
+     * @dev
+     * See {ERC20-_burn}
+     * Emits a {Burn} event
+     * Emits a {Transfer} event with `to` set to the zero address  (emits inside _burn).
+     * Requirements:
+     * - the caller must have the `BURNER_ROLE`.
+     */
     function burn(
         address account,
         uint256 value
@@ -101,6 +157,16 @@ contract TERC20Upgradeable is
         emit Burn(msg.sender, account, value);
     }
 
+    /**
+     *
+     * @notice batch version of {burn}.
+     * @dev
+     * Emits a {BurnBatch} event
+     * Requirements:
+     * - `accounts` cannot be empty
+     * - `accounts` and `values` must have the same length
+     * - the caller must have the `BURNER_ROLE`.
+     */
     function burnBatch(
         address[] calldata accounts,
         uint256[] calldata values
@@ -117,6 +183,27 @@ contract TERC20Upgradeable is
             _burn(accounts[i], values[i]);
         }
         emit BurnBatch(msg.sender, accounts, values);
+    }
+
+    /**
+     *
+     * @notice batch version of {burn}.
+     * @dev
+     * Emits a {BurnBatch} event
+     * Requirements:
+     * - `accounts` cannot be empty
+     * - `accounts` and `values` must have the same length
+     * - the caller must have the `BURNER_ROLE`.
+     */
+    function burnBatch(
+        address[] calldata accounts,
+        uint256 value
+    ) public override onlyRole(BURNER_ROLE) {
+        require(accounts.length != 0, Burn_EmptyAccounts());
+        for (uint256 i = 0; i < accounts.length; ++i) {
+            _burn(accounts[i], value);
+        }
+        emit BurnBatch(msg.sender, accounts, value);
     }
 
     /* ============ ACCESS CONTROL ============ */

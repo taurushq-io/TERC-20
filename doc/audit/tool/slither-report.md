@@ -17,6 +17,22 @@ Confidence: High
 
 src/TERC20Upgradeable.sol#L147-L155
 
+
+
+## unused-state
+
+> Used by ERC-2701 through assembly
+
+Impact: Informational
+Confidence: High
+
+ - [ ] ID-4
+   [TERC20Upgradeable.TERC20UpgradeableStorageLocation](src/TERC20Upgradeable.sol#L17-L18) is never used in [TERC20Upgradeable](src/TERC20Upgradeable.sol#L9-L243)
+
+src/TERC20Upgradeable.sol#L17-L18
+
+
+
 ## pragma
 
 > Solidity version is set in the config file

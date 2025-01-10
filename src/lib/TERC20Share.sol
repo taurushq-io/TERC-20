@@ -13,12 +13,14 @@ abstract contract TERC20Share is IERC20, IAccessControl {
         address[] accounts,
         uint256[] values
     );
+    event BurnBatch(address indexed burner, address[] accounts, uint256 value);
     event Mint(address indexed minter, address indexed account, uint256 value);
     event MintBatch(
         address indexed minter,
         address[] accounts,
         uint256[] values
     );
+    event MintBatch(address indexed minter, address[] accounts, uint256 value);
 
     /* ============ Errors ============ */
     error Burn_EmptyAccounts();
@@ -31,10 +33,18 @@ abstract contract TERC20Share is IERC20, IAccessControl {
         address[] calldata accounts,
         uint256[] calldata values
     ) public virtual;
+    function burnBatch(
+        address[] calldata accounts,
+        uint256 value
+    ) public virtual;
     function burn(address account, uint256 value) public virtual;
     function mintBatch(
         address[] calldata accounts,
         uint256[] calldata values
+    ) public virtual;
+    function mintBatch(
+        address[] calldata accounts,
+        uint256 value
     ) public virtual;
     function mint(address account, uint256 value) public virtual;
 }

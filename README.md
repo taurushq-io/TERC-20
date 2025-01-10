@@ -13,12 +13,12 @@ These ERC-20 tokens have the following characteristics:
 
 - A mint function only accessible with the MINTER role
 
-- A mint batch function only accessible with the MINTER role
+- Two mint batch functions only accessible with the MINTER role
 
 **Burn**
 
 - A burn function only accessible with the BURNER role
-- A burn in batch function only accessible with the BURNER role
+- Two burn in batch functions only accessible with the BURNER role
 
 **ERC20**
 
@@ -56,7 +56,6 @@ These ERC-20 tokens have the following characteristics:
 
 #### TERC20Standalone
 
-
 |       Contract       |       Type        |               Bases               |                |               |
 | :------------------: | :---------------: | :-------------------------------: | :------------: | :-----------: |
 |          └           | **Function Name** |          **Visibility**           | **Mutability** | **Modifiers** |
@@ -66,12 +65,13 @@ These ERC-20 tokens have the following characteristics:
 |          └           |     decimals      |             Public ❗️              |                |      NO❗️      |
 |          └           |       mint        |             Public ❗️              |       🛑        |   onlyRole    |
 |          └           |     mintBatch     |             Public ❗️              |       🛑        |   onlyRole    |
+|          └           |     mintBatch     |             Public ❗️              |       🛑        |   onlyRole    |
 |          └           |       burn        |             Public ❗️              |       🛑        |   onlyRole    |
+|          └           |     burnBatch     |             Public ❗️              |       🛑        |   onlyRole    |
 |          └           |     burnBatch     |             Public ❗️              |       🛑        |   onlyRole    |
 |          └           |      hasRole      |             Public ❗️              |                |      NO❗️      |
 
 #### TERC20Upgradeable
-
 
 |       Contract        |                Type                |                            Bases                             |                |                  |
 | :-------------------: | :--------------------------------: | :----------------------------------------------------------: | :------------: | :--------------: |
@@ -84,7 +84,9 @@ These ERC-20 tokens have the following characteristics:
 |           └           |              decimals              |                           Public ❗️                           |                |       NO❗️        |
 |           └           |                mint                |                           Public ❗️                           |       🛑        |     onlyRole     |
 |           └           |             mintBatch              |                           Public ❗️                           |       🛑        |     onlyRole     |
+|           └           |             mintBatch              |                           Public ❗️                           |       🛑        |     onlyRole     |
 |           └           |                burn                |                           Public ❗️                           |       🛑        |     onlyRole     |
+|           └           |             burnBatch              |                           Public ❗️                           |       🛑        |     onlyRole     |
 |           └           |             burnBatch              |                           Public ❗️                           |       🛑        |     onlyRole     |
 |           └           |              hasRole               |                           Public ❗️                           |                |       NO❗️        |
 |           └           |    _getTERC20UpgradeableStorage    |                          Private 🔐                           |                |                  |
@@ -114,6 +116,10 @@ See [slither](./doc/audit/tool/slither-report.md)
 ## Tools
 
 ### Prettier
+
+```bash
+npx prettier --write --plugin=prettier-plugin-solidity 'src/**/*.sol'
+```
 
 ```bash
 npx prettier --write --plugin=prettier-plugin-solidity 'src/**/*.sol'
@@ -210,7 +216,7 @@ forge coverage --report lcov
 - Generate `index.html`
 
 ```bash
-forge coverage --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage
+forge coverage --ffi --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage 
 ```
 
 See [Solidity Coverage in VS Code with Foundry](https://mirror.xyz/devanon.eth/RrDvKPnlD-pmpuW7hQeR5wWdVjklrpOgPCOA-PJkWFU) & [Foundry forge coverage](https://www.rareskills.io/post/foundry-forge-coverage)

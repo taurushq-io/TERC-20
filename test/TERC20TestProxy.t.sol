@@ -4,21 +4,20 @@ pragma solidity ^0.8.27;
 import "forge-std/Test.sol";
 import "../src/TERC20Upgradeable.sol";
 import "./TERC20TestShare.sol";
-import { Upgrades } from "openzeppelin-foundry-upgrades/Upgrades.sol";
-
-
+import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 contract TERC20TestProxy is Test, TERC20TestShare {
-
-    function setUp() public{
+    function setUp() public {
         address proxy = Upgrades.deployTransparentProxy(
             "TERC20Upgradeable.sol",
             admin,
-            abi.encodeCall(TERC20Upgradeable.initialize, ( admin, testName, testSymbol, testDecimals))
+            abi.encodeCall(
+                TERC20Upgradeable.initialize,
+                (admin, testName, testSymbol, testDecimals)
+            )
         );
-       token = TERC20Upgradeable(proxy);
+        token = TERC20Upgradeable(proxy);
     }
-
 
     /*//////////////////////////////////////////////////////////////
                           MINT
@@ -26,13 +25,15 @@ contract TERC20TestProxy is Test, TERC20TestShare {
 
     function testMint() public {
         TERC20TestShare.testShareCanMint();
-        
     }
 
     function testMintBatch() public {
         TERC20TestShare.testShareCanMintBatch();
     }
 
+    function testMintBatchSingleValue() public {
+        TERC20TestShare.testShareCanMintBatchSingleValue();
+    }
 
     /*//////////////////////////////////////////////////////////////
                            BURN
@@ -46,6 +47,10 @@ contract TERC20TestProxy is Test, TERC20TestShare {
         TERC20TestShare.testShareCanBurnBatch();
     }
 
+    function testBurnBatchSingleValue() public {
+        TERC20TestShare.testShareCanBurnBatchSingleValue();
+    }
+
     /*//////////////////////////////////////////////////////////////
                            Access Control
     //////////////////////////////////////////////////////////////*/
@@ -57,7 +62,6 @@ contract TERC20TestProxy is Test, TERC20TestShare {
     function testAttackerCannotMintAndMintBatch() public {
         TERC20TestShare.testShareAttackerCannotMintAndMintBatch();
     }
-
 
     /*//////////////////////////////////////////////////////////////
                           Invalid Parameters
@@ -77,7 +81,10 @@ contract TERC20TestProxy is Test, TERC20TestShare {
         address proxy = Upgrades.deployTransparentProxy(
             "TERC20Upgradeable.sol",
             admin,
-            abi.encodeCall(TERC20Upgradeable.initialize, ( admin, testName, testSymbol, testDecimals))
+            abi.encodeCall(
+                TERC20Upgradeable.initialize,
+                (admin, testName, testSymbol, testDecimals)
+            )
         );
         TERC20Upgradeable TERC20 = TERC20Upgradeable(proxy);
         assertEq(TERC20.decimals(), testDecimals);

@@ -5,7 +5,7 @@
 
 |  File Name  |  SHA-1 Hash  |
 |-------------|--------------|
-| ./TERC20Standalone.sol | 4e92fb2c9c528659eb3e2ae89b699ba8865c1709 |
+| ./TERC20Standalone.sol | 32b1195f3e0f379702e98ed423f637ce0b3f2a3e |
 
 
 ### Contracts Description Table
@@ -20,7 +20,9 @@
 | └ | decimals | Public ❗️ |   |NO❗️ |
 | └ | mint | Public ❗️ | 🛑  | onlyRole |
 | └ | mintBatch | Public ❗️ | 🛑  | onlyRole |
+| └ | mintBatch | Public ❗️ | 🛑  | onlyRole |
 | └ | burn | Public ❗️ | 🛑  | onlyRole |
+| └ | burnBatch | Public ❗️ | 🛑  | onlyRole |
 | └ | burnBatch | Public ❗️ | 🛑  | onlyRole |
 | └ | hasRole | Public ❗️ |   |NO❗️ |
 
