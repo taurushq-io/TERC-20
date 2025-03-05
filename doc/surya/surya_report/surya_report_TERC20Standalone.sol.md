@@ -5,7 +5,7 @@
 
 |  File Name  |  SHA-1 Hash  |
 |-------------|--------------|
-| ./TERC20Standalone.sol | 4e92fb2c9c528659eb3e2ae89b699ba8865c1709 |
+| ./TERC20Standalone.sol | ff3df10edde6fbe7c12f1d26c4cad0dc0a8da04b |
 
 
 ### Contracts Description Table
@@ -18,10 +18,11 @@
 | **TERC20Standalone** | Implementation | ERC20, AccessControl, TERC20Share |||
 | └ | <Constructor> | Public ❗️ | 🛑  | ERC20 |
 | └ | decimals | Public ❗️ |   |NO❗️ |
+| └ | version | Public ❗️ |   |NO❗️ |
 | └ | mint | Public ❗️ | 🛑  | onlyRole |
-| └ | mintBatch | Public ❗️ | 🛑  | onlyRole |
+| └ | batchMint | Public ❗️ | 🛑  | onlyRole |
 | └ | burn | Public ❗️ | 🛑  | onlyRole |
-| └ | burnBatch | Public ❗️ | 🛑  | onlyRole |
+| └ | batchBurn | Public ❗️ | 🛑  | onlyRole |
 | └ | hasRole | Public ❗️ |   |NO❗️ |
 
 

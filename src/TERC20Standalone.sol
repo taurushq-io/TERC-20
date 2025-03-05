@@ -5,6 +5,9 @@ import "OZ/token/ERC20/ERC20.sol";
 import "OZ/access/AccessControl.sol";
 import "./lib/TERC20Share.sol";
 
+/**
+* @title TERC20 for an immutable deployment, without proxy
+*/
 contract TERC20Standalone is ERC20, AccessControl, TERC20Share {
     uint8 internal immutable _decimals;
 
@@ -25,11 +28,27 @@ contract TERC20Standalone is ERC20, AccessControl, TERC20Share {
      * @notice Returns the number of decimals used to get its user representation.
      * @inheritdoc ERC20
      */
-    function decimals() public view virtual override returns (uint8) {
+    function decimals() public view virtual override(ERC20) returns (uint8) {
         return _decimals;
     }
 
+    /**
+    * @inheritdoc TERC20Share
+    */
+    function version()
+        public
+        pure
+        virtual
+        override(TERC20Share)
+        returns (string memory)
+    {
+        return TERC20Share.VERSION;
+    }
+
     /* ============ Mint ============ */
+    /**
+    * @inheritdoc TERC20Share
+    */
     function mint(
         address account,
         uint256 value
@@ -38,7 +57,10 @@ contract TERC20Standalone is ERC20, AccessControl, TERC20Share {
         emit Mint(msg.sender, account, value);
     }
 
-    function mintBatch(
+    /**
+    * @inheritdoc TERC20Share
+    */
+    function batchMint(
         address[] calldata accounts,
         uint256[] calldata values
     ) public override onlyRole(MINTER_ROLE) {
@@ -52,11 +74,14 @@ contract TERC20Standalone is ERC20, AccessControl, TERC20Share {
         for (uint256 i = 0; i < accounts.length; ++i) {
             _mint(accounts[i], values[i]);
         }
-        emit MintBatch(msg.sender, accounts, values);
+        emit BatchMint(msg.sender, accounts, values);
     }
 
     /* ============ Burn ============ */
 
+    /**
+    * @inheritdoc TERC20Share
+    */
     function burn(
         address account,
         uint256 value
@@ -65,7 +90,10 @@ contract TERC20Standalone is ERC20, AccessControl, TERC20Share {
         emit Burn(msg.sender, account, value);
     }
 
-    function burnBatch(
+    /**
+    * @inheritdoc TERC20Share
+    */
+    function batchBurn(
         address[] calldata accounts,
         uint256[] calldata values
     ) public override onlyRole(BURNER_ROLE) {
@@ -79,7 +107,7 @@ contract TERC20Standalone is ERC20, AccessControl, TERC20Share {
         for (uint256 i = 0; i < accounts.length; ++i) {
             _burn(accounts[i], values[i]);
         }
-        emit BurnBatch(msg.sender, accounts, values);
+        emit BatchBurn(msg.sender, accounts, values);
     }
 
     /* ============ ACCESS CONTROL ============ */

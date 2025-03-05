@@ -2,36 +2,62 @@
 
 [TOC]
 
-This smart contract implements a basic ERC-20 token with the following characteristics:
+This project contains two ERC-20 tokens:
+
+- `TERC20Standalone` for an immutable deployment, without proxy
+- `TERC20Upgradeable` for an upgradeable deployment, with a compatible proxy (Transparent or Beacon)
+
+## Common characteristics
+
+These ERC-20 tokens have the following characteristics:
 
 **Mint**
 
-- A mint function only accessible with the MINTER role
+- A *mint* function only accessible with the MINTER role
 
-- A mint batch function only accessible with the MINTER role
+
+```solidity
+mint(address,uint256)
+```
+
+- A *batchMint*  function only accessible with the MINTER role
+
+```solidity
+batchMint(address[],uint256[])
+```
 
 **Burn**
 
-- A burn function only accessible with the BURNER role
-- A burn in batch function only accessible with the BURNER role
+- A *burn* function only accessible with the BURNER role
+
+```solidity
+burn(address,uint256)
+```
+
+- A *batchBurn* function only accessible with the BURNER role
+
+```solidity
+batchBurn(address[],uint256[])
+```
 
 **ERC20**
 
 - At deployment, the issuer can set the name, symbol and decimals.
-
 - Once deployed, it is no longer possible to modify these values except via an upgrade in the case of the proxy.
 
-**Details**
+## Access Control
 
-- The smart contract uses the library OpenZeppepelin, the solidity version 0.8.27 and an access control.
+There are three roles: MINTER_ROLE, BURNER_ROLE and DEFAULT_ADMIN_ROLE
 
-- Code is written with Foundry. with several tests to check that everything is good.
-
-
+The DEFAULT_ADMIN_ROLE has all the roles by default
 
 ## Schema
 
 ### TERC20Standalone
+
+### UML
+
+![TERC20StandaloneUML](./doc/plantuml/TERC20StandaloneUML.png)
 
 #### Inheritance
 
@@ -44,6 +70,10 @@ This smart contract implements a basic ERC-20 token with the following character
 
 
 ### TERC20 Upgradeable
+
+#### UML
+
+![TERC20UpgradeableUML](./doc/plantuml/TERC20UpgradeableUML.png)
 
 #### Inheritance
 
@@ -59,7 +89,6 @@ This smart contract implements a basic ERC-20 token with the following character
 
 #### TERC20Standalone
 
-
 |       Contract       |       Type        |               Bases               |                |               |
 | :------------------: | :---------------: | :-------------------------------: | :------------: | :-----------: |
 |          └           | **Function Name** |          **Visibility**           | **Mutability** | **Modifiers** |
@@ -67,14 +96,14 @@ This smart contract implements a basic ERC-20 token with the following character
 | **TERC20Standalone** |  Implementation   | ERC20, AccessControl, TERC20Share |                |               |
 |          └           |   <Constructor>   |             Public ❗️              |       🛑        |     ERC20     |
 |          └           |     decimals      |             Public ❗️              |                |      NO❗️      |
+|          └           |      version      |             Public ❗️              |                |      NO❗️      |
 |          └           |       mint        |             Public ❗️              |       🛑        |   onlyRole    |
-|          └           |     mintBatch     |             Public ❗️              |       🛑        |   onlyRole    |
+|          └           |     batchMint     |             Public ❗️              |       🛑        |   onlyRole    |
 |          └           |       burn        |             Public ❗️              |       🛑        |   onlyRole    |
-|          └           |     burnBatch     |             Public ❗️              |       🛑        |   onlyRole    |
+|          └           |     batchBurn     |             Public ❗️              |       🛑        |   onlyRole    |
 |          └           |      hasRole      |             Public ❗️              |                |      NO❗️      |
 
 #### TERC20Upgradeable
-
 
 |       Contract        |                Type                |                            Bases                             |                |                  |
 | :-------------------: | :--------------------------------: | :----------------------------------------------------------: | :------------: | :--------------: |
@@ -85,10 +114,11 @@ This smart contract implements a basic ERC-20 token with the following character
 |           └           |             initialize             |                           Public ❗️                           |       🛑        |   initializer    |
 |           └           | __TERC20Upgradeable_init_unchained |                          Internal 🔒                          |       🛑        | onlyInitializing |
 |           └           |              decimals              |                           Public ❗️                           |                |       NO❗️        |
+|           └           |              version               |                           Public ❗️                           |                |       NO❗️        |
 |           └           |                mint                |                           Public ❗️                           |       🛑        |     onlyRole     |
-|           └           |             mintBatch              |                           Public ❗️                           |       🛑        |     onlyRole     |
+|           └           |             batchMint              |                           Public ❗️                           |       🛑        |     onlyRole     |
 |           └           |                burn                |                           Public ❗️                           |       🛑        |     onlyRole     |
-|           └           |             burnBatch              |                           Public ❗️                           |       🛑        |     onlyRole     |
+|           └           |             batchBurn              |                           Public ❗️                           |       🛑        |     onlyRole     |
 |           └           |              hasRole               |                           Public ❗️                           |                |       NO❗️        |
 |           └           |    _getTERC20UpgradeableStorage    |                          Private 🔐                           |                |                  |
 
@@ -107,8 +137,8 @@ The toolchain includes the following components, where the versions are the late
 
 - Foundry
 - Solidity 0.8.28 (via solc-js)
-- OpenZeppelin Contracts (submodule) [v5.1.0](https://github.com/OpenZeppelin/openzeppelin-contracts/releases/tag/v5.0.2)
-- OpenZeppelin Contracts upgradeable (submodule) [v5.1.0](https://github.com/OpenZeppelin/openzeppelin-contracts/releases/tag/v5.0.2)
+- OpenZeppelin Contracts (submodule) [v5.2.0](https://github.com/OpenZeppelin/openzeppelin-contracts/releases/tag/v5.2.0)
+- OpenZeppelin Contracts upgradeable (submodule) [v5.2.0](https://github.com/OpenZeppelin/openzeppelin-contracts/releases/tag/v5.2.0)
 
 ## Audit
 
@@ -122,10 +152,24 @@ See [slither](./doc/audit/tool/slither-report.md)
 npx prettier --write --plugin=prettier-plugin-solidity 'src/**/*.sol'
 ```
 
+```bash
+npx prettier --write --plugin=prettier-plugin-solidity 'test/**/*.sol'
+```
+
 ### Slither
+
+See [crytic/slither]( https://github.com/crytic/slither)
 
 ```bash
 slither .  --checklist --filter-paths "openzeppelin-contracts|test|forge-std" > slither-report.md
+```
+
+### Mythril
+
+See [Consensys/mythril](https://github.com/Consensys/mythril)
+
+```bash
+myth analyze src/TERC20Standalone.sol --solc-json solc_setting.json
 ```
 
 ### Surya
@@ -138,7 +182,7 @@ Foundry is a blazing fast, portable and modular toolkit for Ethereum application
 
 Foundry consists of:
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+-   **Forge**: Ethereum testing framework (like Hardhat).
 -   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
 -   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
 -   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
@@ -198,6 +242,12 @@ See also the test framework's [official documentation](https://book.getfoundry.s
 
 ### Coverage
 
+- Coverage v1.0.0
+
+![coverage](./doc/coverage/coverage.png)
+
+
+
 * Perform a code coverage
 
 ```
@@ -213,7 +263,7 @@ forge coverage --report lcov
 - Generate `index.html`
 
 ```bash
-forge coverage --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage
+forge coverage --ffi --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage
 ```
 
 See [Solidity Coverage in VS Code with Foundry](https://mirror.xyz/devanon.eth/RrDvKPnlD-pmpuW7hQeR5wWdVjklrpOgPCOA-PJkWFU) & [Foundry forge coverage](https://www.rareskills.io/post/foundry-forge-coverage)
