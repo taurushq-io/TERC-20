@@ -53,7 +53,7 @@ abstract contract TERC20ShareBurn {
      * Emits a {Transfer} event with `to` set to the zero address  (emits inside _burn).
      * Requirements:
      * - The caller must have the `BURNER_ROLE`.
-     * - Account cannot be the zero address (error ERC20InvalidSender). 
+     * - Account cannot be the zero address (error ERC20InvalidSender).
      * The check is made inside the internal OpenZeppelin function _burn.
      */
     function burn(address account, uint256 value) public virtual;
@@ -68,9 +68,9 @@ abstract contract TERC20ShareBurn {
      * - the caller must have the `BURNER_ROLE`.
      * - `accounts` cannot be empty (error Burn_EmptyAccounts)
      * - `accounts` and `values` must have the same length
-     * - `accounts` cannot contain a zero address. 
-     * The check is made inside the internal OpenZeppelin function _burn. 
-     * If this is the case, the contract will generate the following error defined in the ERC-6093: 
+     * - `accounts` cannot contain a zero address.
+     * The check is made inside the internal OpenZeppelin function _burn.
+     * If this is the case, the contract will generate the following error defined in the ERC-6093:
      * ERC20InvalidSender
      */
     function batchBurn(
@@ -88,9 +88,9 @@ abstract contract TERC20ShareBurn {
      * Requirements:
      * - the caller must have the `BURNER_ROLE`.
      * - `accounts` cannot be empty (error Burn_EmptyAccounts)
-     * - `accounts` cannot contain a zero address. 
-     * The check is made inside the internal OpenZeppelin function _burn. 
-     * If this is the case, the contract will generate the following error defined in the ERC-6093: 
+     * - `accounts` cannot contain a zero address.
+     * The check is made inside the internal OpenZeppelin function _burn.
+     * If this is the case, the contract will generate the following error defined in the ERC-6093:
      * ERC20InvalidSender
      */
     function batchBurnSameValue(
