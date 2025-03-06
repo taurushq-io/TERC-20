@@ -1,63 +1,56 @@
 ## TERC-20
 
-[TOC]
-
-This project contains two ERC-20 tokens:
+This project contains two basic ERC-20 tokens:
 
 - `TERC20Standalone` for an immutable deployment, without proxy
 - `TERC20Upgradeable` for an upgradeable deployment, with a compatible proxy (Transparent or Beacon)
 
-## Common characteristics
+## Common features
 
 These ERC-20 tokens have the following characteristics:
 
 **Mint**
 
-- A *mint* function only accessible with the MINTER role
+- A mint function only accessible with the MINTER role
 
-
-```solidity
-mint(address,uint256)
-```
-
-- A *batchMint*  function only accessible with the MINTER role
-
-```solidity
-batchMint(address[],uint256[])
-```
+- Two mint batch functions only accessible with the MINTER role
 
 **Burn**
 
-- A *burn* function only accessible with the BURNER role
-
-```solidity
-burn(address,uint256)
-```
-
-- A *batchBurn* function only accessible with the BURNER role
-
-```solidity
-batchBurn(address[],uint256[])
-```
+- A burn function only accessible with the BURNER role
+- Two burn in batch functions only accessible with the BURNER role
 
 **ERC20**
 
 - At deployment, the issuer can set the name, symbol and decimals.
+
 - Once deployed, it is no longer possible to modify these values except via an upgrade in the case of the proxy.
 
-## Access Control
+## Access control
 
-There are three roles: MINTER_ROLE, BURNER_ROLE and DEFAULT_ADMIN_ROLE
+Access Control is managed with the OpenZeppelin library [AccessControl](https://docs.openzeppelin.com/contracts/5.x/api/access#AccessControl) which implements a role-based access control mechanisms.
 
-The DEFAULT_ADMIN_ROLE has all the roles by default
+- Default Admin Role
+
+The most important role is the role `DEFAULT_ADMIN_ROLE`. This role manage all others roles.
+
+This role is also its own admin: it has permission to grant and revoke this role. 
+
+warning: Extra precautions should be taken to secure accounts that have been granted it.
+
+- Supply management role
+
+Two roles BURNER_ROLE and MINTER_ROLE allow their members to respectively mint or burn tokens.
+
+### Schema
+
+
+
+![TERC20.drawio](./doc/TERC20.drawio.png)
 
 ## Schema
 
 ### TERC20Standalone
-
-### UML
-
-![TERC20StandaloneUML](./doc/plantuml/TERC20StandaloneUML.png)
 
 #### Inheritance
 
@@ -71,10 +64,6 @@ The DEFAULT_ADMIN_ROLE has all the roles by default
 
 ### TERC20 Upgradeable
 
-#### UML
-
-![TERC20UpgradeableUML](./doc/plantuml/TERC20UpgradeableUML.png)
-
 #### Inheritance
 
 ![surya_inheritance_TERC20Upgradeable.sol](./doc/surya/surya_inheritance/surya_inheritance_TERC20Upgradeable.sol.png)
@@ -85,42 +74,60 @@ The DEFAULT_ADMIN_ROLE has all the roles by default
 
 ## Surya Description Report
 
-### Contracts Description Table
+### TERC20Standalone
 
-#### TERC20Standalone
+|       Contract       |        Type        |               Bases               |                |               |
+| :------------------: | :----------------: | :-------------------------------: | :------------: | :-----------: |
+|          └           | **Function Name**  |          **Visibility**           | **Mutability** | **Modifiers** |
+|                      |                    |                                   |                |               |
+| **TERC20Standalone** |   Implementation   | ERC20, AccessControl, TERC20Share |                |               |
+|          └           |   <Constructor>    |             Public ❗️              |       🛑        |     ERC20     |
+|          └           |      decimals      |             Public ❗️              |                |      NO❗️      |
+|          └           |      version       |             Public ❗️              |                |      NO❗️      |
+|          └           |        mint        |             Public ❗️              |       🛑        |   onlyRole    |
+|          └           |     batchMint      |             Public ❗️              |       🛑        |   onlyRole    |
+|          └           | batchMintSameValue |             Public ❗️              |       🛑        |   onlyRole    |
+|          └           |        burn        |             Public ❗️              |       🛑        |   onlyRole    |
+|          └           |     batchBurn      |             Public ❗️              |       🛑        |   onlyRole    |
+|          └           | batchBurnSameValue |             Public ❗️              |       🛑        |   onlyRole    |
+|          └           |      hasRole       |             Public ❗️              |                |      NO❗️      |
 
-|       Contract       |       Type        |               Bases               |                |               |
-| :------------------: | :---------------: | :-------------------------------: | :------------: | :-----------: |
-|          └           | **Function Name** |          **Visibility**           | **Mutability** | **Modifiers** |
-|                      |                   |                                   |                |               |
-| **TERC20Standalone** |  Implementation   | ERC20, AccessControl, TERC20Share |                |               |
-|          └           |   <Constructor>   |             Public ❗️              |       🛑        |     ERC20     |
-|          └           |     decimals      |             Public ❗️              |                |      NO❗️      |
-|          └           |      version      |             Public ❗️              |                |      NO❗️      |
-|          └           |       mint        |             Public ❗️              |       🛑        |   onlyRole    |
-|          └           |     batchMint     |             Public ❗️              |       🛑        |   onlyRole    |
-|          └           |       burn        |             Public ❗️              |       🛑        |   onlyRole    |
-|          └           |     batchBurn     |             Public ❗️              |       🛑        |   onlyRole    |
-|          └           |      hasRole      |             Public ❗️              |                |      NO❗️      |
-
-#### TERC20Upgradeable
+### TERC20Upgradeable
 
 |       Contract        |                Type                |                            Bases                             |                |                  |
 | :-------------------: | :--------------------------------: | :----------------------------------------------------------: | :------------: | :--------------: |
 |           └           |         **Function Name**          |                        **Visibility**                        | **Mutability** |  **Modifiers**   |
 |                       |                                    |                                                              |                |                  |
-| **TERC20Upgradeable** |           Implementation           | Initializable, ERC20Upgradeable, AccessControlUpgradeable, TERC20Share |                |                  |
+| **TERC20Upgradeable** |           Implementation           | Initializable, ERC20Upgradeable, AccessControlUpgradeable, TERC20Share, TERC20UpgradeableBurn, TERC20UpgradeableMint |                |                  |
 |           └           |           <Constructor>            |                           Public ❗️                           |       🛑        |       NO❗️        |
 |           └           |             initialize             |                           Public ❗️                           |       🛑        |   initializer    |
 |           └           | __TERC20Upgradeable_init_unchained |                          Internal 🔒                          |       🛑        | onlyInitializing |
 |           └           |              decimals              |                           Public ❗️                           |                |       NO❗️        |
 |           └           |              version               |                           Public ❗️                           |                |       NO❗️        |
-|           └           |                mint                |                           Public ❗️                           |       🛑        |     onlyRole     |
-|           └           |             batchMint              |                           Public ❗️                           |       🛑        |     onlyRole     |
-|           └           |                burn                |                           Public ❗️                           |       🛑        |     onlyRole     |
-|           └           |             batchBurn              |                           Public ❗️                           |       🛑        |     onlyRole     |
 |           └           |              hasRole               |                           Public ❗️                           |                |       NO❗️        |
 |           └           |    _getTERC20UpgradeableStorage    |                          Private 🔐                           |                |                  |
+
+#### TERC20UpgradeableMint
+
+|         Contract          |        Type        |                            Bases                            |                |               |
+| :-----------------------: | :----------------: | :---------------------------------------------------------: | :------------: | :-----------: |
+|             └             | **Function Name**  |                       **Visibility**                        | **Mutability** | **Modifiers** |
+|                           |                    |                                                             |                |               |
+| **TERC20UpgradeableMint** |   Implementation   | ERC20Upgradeable, AccessControlUpgradeable, TERC20ShareMint |                |               |
+|             └             |        mint        |                          Public ❗️                           |       🛑        |   onlyRole    |
+|             └             |     batchMint      |                          Public ❗️                           |       🛑        |   onlyRole    |
+|             └             | batchMintSameValue |                          Public ❗️                           |       🛑        |   onlyRole    |
+
+#### TERC20UpgradeableBurn
+
+|         Contract          |        Type        |                            Bases                            |                |               |
+| :-----------------------: | :----------------: | :---------------------------------------------------------: | :------------: | :-----------: |
+|             └             | **Function Name**  |                       **Visibility**                        | **Mutability** | **Modifiers** |
+|                           |                    |                                                             |                |               |
+| **TERC20UpgradeableBurn** |   Implementation   | ERC20Upgradeable, AccessControlUpgradeable, TERC20ShareBurn |                |               |
+|             └             |        burn        |                          Public ❗️                           |       🛑        |   onlyRole    |
+|             └             |     batchBurn      |                          Public ❗️                           |       🛑        |   onlyRole    |
+|             └             | batchBurnSameValue |                          Public ❗️                           |       🛑        |   onlyRole    |
 
 ### Legend
 
@@ -135,16 +142,60 @@ The DEFAULT_ADMIN_ROLE has all the roles by default
 
 The toolchain includes the following components, where the versions are the latest ones that we tested:
 
-- Foundry
+- Foundry / forge 1.0.0-stable
 - Solidity 0.8.28 (via solc-js)
-- OpenZeppelin Contracts (submodule) [v5.2.0](https://github.com/OpenZeppelin/openzeppelin-contracts/releases/tag/v5.2.0)
-- OpenZeppelin Contracts upgradeable (submodule) [v5.2.0](https://github.com/OpenZeppelin/openzeppelin-contracts/releases/tag/v5.2.0)
+- OpenZeppelin Contracts (submodule) [v5.1.0](https://github.com/OpenZeppelin/openzeppelin-contracts/releases/tag/v5.0.2)
+- OpenZeppelin Contracts upgradeable (submodule) [v5.1.0](https://github.com/OpenZeppelin/openzeppelin-contracts/releases/tag/v5.0.2)
 
-## Audit
+## Security and Audit
 
-See [slither](./doc/audit/tool/slither-report.md)
+### Vulnerability disclosure
+
+Please see [SECURITY.md](./SECURITY.md).
+
+### Audit
+
+Report made by [SecFault Security](https://secfault-security.com)
+
+See our comment here [report file](./doc/audit/secfault-report.md)
+
+### Audit tools
+
+#### Slither
+
+ [Report file](./doc/audit/tool/slither-report.md)
+
+See [crytic/slither](https://github.com/crytic/slither)
+
+```bash
+slither .  --checklist --filter-paths "openzeppelin-contracts|test|forge-std" > slither-report.md
+```
+
+#### Mythril
+
+ [Report file](./doc/audit/tool/mythril-report.md)
+
+```bash
+myth analyze src/TERC20Standalone.sol --solc-json solc_setting.json
+```
+
+See [Consensys/mythril](https://github.com/Consensys/mythril)
+
+#### Cyfrin Aderyn
+
+ [Report file](./doc/audit/tool/aderyn-report.md)
+
+```
+aderyn
+```
+
+See [Cyfrin/aderyn](https://github.com/Cyfrin/aderyn)
 
 ## Tools
+
+### Surya
+
+See [./doc/script](./doc/script) and [Consensys/surya](https://github.com/Consensys/surya)
 
 ### Prettier
 
@@ -156,33 +207,13 @@ npx prettier --write --plugin=prettier-plugin-solidity 'src/**/*.sol'
 npx prettier --write --plugin=prettier-plugin-solidity 'test/**/*.sol'
 ```
 
-### Slither
-
-See [crytic/slither]( https://github.com/crytic/slither)
-
-```bash
-slither .  --checklist --filter-paths "openzeppelin-contracts|test|forge-std" > slither-report.md
-```
-
-### Mythril
-
-See [Consensys/mythril](https://github.com/Consensys/mythril)
-
-```bash
-myth analyze src/TERC20Standalone.sol --solc-json solc_setting.json
-```
-
-### Surya
-
-See [./doc/script](./doc/script)
-
 ### Foundry
 
 Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.
 
 Foundry consists of:
 
--   **Forge**: Ethereum testing framework (like Hardhat).
+-   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
 -   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
 -   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
 -   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
@@ -242,12 +273,6 @@ See also the test framework's [official documentation](https://book.getfoundry.s
 
 ### Coverage
 
-- Coverage v1.0.0
-
-![coverage](./doc/coverage/coverage.png)
-
-
-
 * Perform a code coverage
 
 ```
@@ -263,7 +288,7 @@ forge coverage --report lcov
 - Generate `index.html`
 
 ```bash
-forge coverage --ffi --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage
+forge coverage --ffi --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage 
 ```
 
 See [Solidity Coverage in VS Code with Foundry](https://mirror.xyz/devanon.eth/RrDvKPnlD-pmpuW7hQeR5wWdVjklrpOgPCOA-PJkWFU) & [Foundry forge coverage](https://www.rareskills.io/post/foundry-forge-coverage)

@@ -5,15 +5,18 @@ import "OZUpgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "OZUpgradeable/access/AccessControlUpgradeable.sol";
 import "OZUpgradeable/proxy/utils/Initializable.sol";
 import "./lib/TERC20Share.sol";
-
+import "./lib/upgradeable/TERC20UpgradeableBurn.sol";
+import "./lib/upgradeable/TERC20UpgradeableMint.sol";
 /**
-* @title TERC20 for an upgradeable deployment, with a compatible proxy (Transparent or Beacon)
-*/
+ * @title TERC20 for an upgradeable deployment, with a compatible proxy (Transparent or Beacon)
+ */
 contract TERC20Upgradeable is
     Initializable,
     ERC20Upgradeable,
     AccessControlUpgradeable,
-    TERC20Share
+    TERC20Share,
+    TERC20UpgradeableBurn,
+    TERC20UpgradeableMint
 {
     /* ============ ERC-7201 ============ */
     // keccak256(abi.encode(uint256(keccak256("TERC20Upgradeable.storage.main")) - 1)) & ~bytes32(uint256(0xff))
@@ -75,8 +78,8 @@ contract TERC20Upgradeable is
     }
 
     /**
-    * @inheritdoc TERC20Share
-    */
+     * @inheritdoc TERC20Share
+     */
     function version()
         public
         pure
@@ -84,72 +87,6 @@ contract TERC20Upgradeable is
         returns (string memory)
     {
         return TERC20Share.VERSION;
-    }
-
-    /* ============ Mint ============ */
-    /**
-    * @inheritdoc TERC20Share
-    */
-    function mint(
-        address account,
-        uint256 value
-    ) public override onlyRole(MINTER_ROLE) {
-        _mint(account, value);
-        emit Mint(msg.sender, account, value);
-    }
-
-    /**
-    * @inheritdoc TERC20Share
-    */
-    function batchMint(
-        address[] calldata accounts,
-        uint256[] calldata values
-    ) public override onlyRole(MINTER_ROLE) {
-        if (accounts.length == 0) {
-            revert Mint_EmptyAccounts();
-        }
-        // We do not check that values is not empty since
-        // this require will throw an error in this case.
-        if (bool(accounts.length != values.length)) {
-            revert Mint_AccountsValueslengthMismatch();
-        }
-        for (uint256 i = 0; i < accounts.length; ++i) {
-            _mint(accounts[i], values[i]);
-        }
-        emit BatchMint(msg.sender, accounts, values);
-    }
-
-    /* ============ Burn ============ */
-    /**
-    * @inheritdoc TERC20Share
-    */
-    function burn(
-        address account,
-        uint256 value
-    ) public override onlyRole(BURNER_ROLE) {
-        _burn(account, value);
-        emit Burn(msg.sender, account, value);
-    }
-
-    /**
-    * @inheritdoc TERC20Share
-    */
-    function batchBurn(
-        address[] calldata accounts,
-        uint256[] calldata values
-    ) public override onlyRole(BURNER_ROLE) {
-        if (accounts.length == 0) {
-            revert Burn_EmptyAccounts();
-        }
-        // We do not check that values is not empty since
-        // this require will throw an error in this case.
-        if (bool(accounts.length != values.length)) {
-            revert Burn_AccountsValueslengthMismatch();
-        }
-        for (uint256 i = 0; i < accounts.length; ++i) {
-            _burn(accounts[i], values[i]);
-        }
-        emit BatchBurn(msg.sender, accounts, values);
     }
 
     /* ============ ACCESS CONTROL ============ */

@@ -1,5 +1,6 @@
 #drawio
 *.bkp
+*.dtmp
 docOut/
 node_modules/
 

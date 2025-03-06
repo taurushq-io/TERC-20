@@ -29,6 +29,10 @@ contract TERC20TestStandalone is Test, TERC20TestShare {
         TERC20TestShare.testShareCanBatchMint();
     }
 
+    function testMintBatchSameValue() public {
+        TERC20TestShare.testShareCanMintBatchSameValue();
+    }
+
     /*//////////////////////////////////////////////////////////////
                            BURN
     //////////////////////////////////////////////////////////////*/
@@ -39,6 +43,10 @@ contract TERC20TestStandalone is Test, TERC20TestShare {
 
     function testBatchBurn() public {
         TERC20TestShare.testShareCanBatchBurn();
+    }
+
+    function testBurnBatchSameValue() public {
+        TERC20TestShare.testShareCanBurnBatchSameValue();
     }
 
     /*//////////////////////////////////////////////////////////////

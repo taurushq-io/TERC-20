@@ -5,7 +5,7 @@
 
 |  File Name  |  SHA-1 Hash  |
 |-------------|--------------|
-| ./TERC20Upgradeable.sol | 161134f7ddb8637bb4ff1a05117aae757b06178d |
+| ./TERC20Upgradeable.sol | e5f92398afaff0863c6cc6c70e8899d12892f799 |
 
 
 ### Contracts Description Table
@@ -15,16 +15,12 @@
 |:----------:|:-------------------:|:----------------:|:----------------:|:---------------:|
 |     └      |  **Function Name**  |  **Visibility**  |  **Mutability**  |  **Modifiers**  |
 ||||||
-| **TERC20Upgradeable** | Implementation | Initializable, ERC20Upgradeable, AccessControlUpgradeable, TERC20Share |||
+| **TERC20Upgradeable** | Implementation | Initializable, ERC20Upgradeable, AccessControlUpgradeable, TERC20Share, TERC20UpgradeableBurn, TERC20UpgradeableMint |||
 | └ | <Constructor> | Public ❗️ | 🛑  |NO❗️ |
 | └ | initialize | Public ❗️ | 🛑  | initializer |
 | └ | __TERC20Upgradeable_init_unchained | Internal 🔒 | 🛑  | onlyInitializing |
 | └ | decimals | Public ❗️ |   |NO❗️ |
 | └ | version | Public ❗️ |   |NO❗️ |
-| └ | mint | Public ❗️ | 🛑  | onlyRole |
-| └ | batchMint | Public ❗️ | 🛑  | onlyRole |
-| └ | burn | Public ❗️ | 🛑  | onlyRole |
-| └ | batchBurn | Public ❗️ | 🛑  | onlyRole |
 | └ | hasRole | Public ❗️ |   |NO❗️ |
 | └ | _getTERC20UpgradeableStorage | Private 🔐 |   | |
 
