@@ -300,6 +300,8 @@ See also the test framework's [official documentation](https://book.getfoundry.s
 
 ### Coverage
 
+![coverage](./doc/coverage/coverage.png)
+
 * Perform a code coverage
 
 ```
