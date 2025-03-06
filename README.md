@@ -2,9 +2,9 @@
 
 [ERC-20](https://eips.ethereum.org/EIPS/eip-20) is the main standard to represent fungibles tokens on Ethereum and EVM blockchain. This ERC defines the functions, events and the behavior of a token implementing this interface.
 
-One of the main library used to build ERC-20 is OpenZeppelin. This library provides already all functions which are part of the standard. Nevertheless, OpenZeppelin does not provide a deployable contract, but only an [abstract](https://docs.soliditylang.org/en/v0.8.28/contracts.html#abstract-contracts) contract which can be used to build other contract though inheritance but cannot be deployed directly on the blockchain. You can find more information about their implementation in their [documentation](https://docs.openzeppelin.com/contracts/5.x/erc20) 
+One of the main libraries used to build ERC-20 is OpenZeppelin. This library provides already all functions which are part of the standard. Nevertheless, OpenZeppelin does not provide a deployable contract, but only an [abstract](https://docs.soliditylang.org/en/v0.8.28/contracts.html#abstract-contracts) contract which can be used to build other contracts though inheritance but cannot be deployed directly on the blockchain. You can find more information about their implementation in their [documentation](https://docs.openzeppelin.com/contracts/5.x/erc20). 
 
-TERC-20 aims to provides a minimal deployable implementation for standalone deployment (immutable) and proxy deployment (upgradeable) which allows the issueur (and only him) to mint and burn tokens. 
+TERC-20 aims to provide a minimal deployable implementation for standalone deployment (immutable) and proxy deployment (upgradeable) which allows the issueur (and only him) to mint and burn tokens. 
 
 TERC-20 exists in two different version: standalone and proxy:
 
@@ -18,7 +18,7 @@ See [./TERC20Upgradeable](./src/TERC20Upgradeable.sol)
 
 ## ERC
 
-In addition to ERC-20, TERC-20 uses the following ERCs
+In addition to ERC-20, TERC-20 uses the following ERCs:
 
 - [ERC-6093](https://eips.ethereum.org/EIPS/eip-6093): Custom errors for ERC-20 tokens (through OpenZeppelin)
 - [eip-3643](https://eips.ethereum.org/EIPS/eip-3643): implements the following functions:
@@ -55,11 +55,11 @@ Interface defined in [./TERC20ShareBurn](./src/lib/TERC20ShareBurn.sol)
 
 ## Access control
 
-Access Control is managed with the OpenZeppelin library [AccessControl](https://docs.openzeppelin.com/contracts/5.x/api/access#AccessControl) which implements a role-based access control mechanisms.
+Access Control is managed with the OpenZeppelin library [AccessControl](https://docs.openzeppelin.com/contracts/5.x/api/access#AccessControl) which implements a role-based access control mechanism.
 
 - Default Admin Role
 
-The most important role is the role `DEFAULT_ADMIN_ROLE`. This role manage all others roles.
+The most important role is the role `DEFAULT_ADMIN_ROLE`. This role manages all other roles.
 
 This role is also its own admin: it has permission to grant and revoke this role. 
 
@@ -171,8 +171,8 @@ The toolchain includes the following components, where the versions are the late
 
 - Foundry / forge 1.0.0-stable
 - Solidity 0.8.28 (via solc-js)
-- OpenZeppelin Contracts (submodule) [v5.1.0](https://github.com/OpenZeppelin/openzeppelin-contracts/releases/tag/v5.0.2)
-- OpenZeppelin Contracts upgradeable (submodule) [v5.1.0](https://github.com/OpenZeppelin/openzeppelin-contracts/releases/tag/v5.0.2)
+- OpenZeppelin Contracts (submodule) [v5.2.0](https://github.com/OpenZeppelin/openzeppelin-contracts/releases/tag/v5.2.0)
+- OpenZeppelin Contracts upgradeable (submodule) [v5.2.0](https://github.com/OpenZeppelin/openzeppelin-contracts/releases/tag/v5.2.0)
 
 ## Security and Audit
 
