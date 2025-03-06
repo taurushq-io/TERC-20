@@ -3,7 +3,6 @@ pragma solidity ^0.8.27;
 
 import "forge-std/Test.sol";
 import "../src/lib/TERC20Share.sol";
-
 contract TERC20TestShare is Test {
     TERC20Share internal token;
 
@@ -21,23 +20,56 @@ contract TERC20TestShare is Test {
     error AccessControlUnauthorizedAccount(address account, bytes32 neededRole);
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
+    bytes32 public constant DEFAULT_ADMIN_ROLE =
+        keccak256("DEFAULT_ADMIN_ROLE");
+    bytes32 public constant NOT_ROLE = keccak256("NOT_ROLE");
 
     // Events
+    /**
+     * @dev Emitted when `value` tokens are burned by transferring them from one account to the address zero
+     *
+     * Note that `value` may be zero.
+     */
     event Burn(address indexed burner, address indexed account, uint256 value);
-    event BurnBatch(
+    /**
+     * @dev Emitted when performing burn in batch
+     */
+    event BatchBurn(
         address indexed burner,
         address[] accounts,
         uint256[] values
     );
-    event BurnBatch(address indexed burner, address[] accounts, uint256 value);
+    /**
+     * @dev Emitted when performing burn in batch with a Same value
+     */
+    event BatchBurnSameValue(
+        address indexed burner,
+        address[] accounts,
+        uint256 value
+    );
+
+    /**
+     * @dev Emitted when `value` tokens are minted by transferring them from the address zero to the account to
+     *
+     * Note that `value` may be zero.
+     */
     event Mint(address indexed minter, address indexed account, uint256 value);
-    event MintBatch(
+    /**
+     * @dev Emitted when performing mint in batch with one specific value by account
+     */
+    event BatchMint(
         address indexed minter,
         address[] accounts,
         uint256[] values
     );
-    event MintBatch(address indexed minter, address[] accounts, uint256 value);
-
+    /**
+     * @dev Emitted when performing mint in batch with a Same value
+     */
+    event BatchMintSameValue(
+        address indexed minter,
+        address[] accounts,
+        uint256 value
+    );
     // Errors
     error Burn_EmptyAccounts();
     error Burn_AccountsValueslengthMismatch();
@@ -47,9 +79,10 @@ contract TERC20TestShare is Test {
     /*//////////////////////////////////////////////////////////////
                         VERSION
     //////////////////////////////////////////////////////////////*/
-    function testShareVersion() internal view{
-        assertEq(token.VERSION(), "0.1.0");
+    function testShareVersion() internal view {
+        assertEq(token.version(), "1.0.0");
     }
+
     /*//////////////////////////////////////////////////////////////
                           MINT
     //////////////////////////////////////////////////////////////*/
@@ -73,7 +106,7 @@ contract TERC20TestShare is Test {
         vm.stopPrank();
     }
 
-    function testShareCanMintBatch() internal {
+    function testShareCanBatchMint() internal {
         // Arrange
         vm.prank(admin);
         token.grantRole(MINTER_ROLE, minter);
@@ -88,10 +121,10 @@ contract TERC20TestShare is Test {
 
         // Events
         vm.expectEmit(true, true, false, true);
-        emit MintBatch(minter, accounts, values);
+        emit BatchMint(minter, accounts, values);
         vm.prank(minter);
         // Act
-        token.mintBatch(accounts, values);
+        token.batchMint(accounts, values);
 
         // check balances
         assertEq(token.balanceOf(holder), 100);
@@ -99,7 +132,7 @@ contract TERC20TestShare is Test {
         vm.stopPrank();
     }
 
-    function testShareCanMintBatchSingleValue() internal {
+    function testShareCanMintBatchSameValue() internal {
         // Arrange
         vm.prank(admin);
         token.grantRole(MINTER_ROLE, minter);
@@ -112,17 +145,16 @@ contract TERC20TestShare is Test {
 
         // Events
         vm.expectEmit(true, true, false, true);
-        emit MintBatch(minter, accounts, mintValue);
+        emit BatchMintSameValue(minter, accounts, mintValue);
         vm.prank(minter);
         // Act
-        token.mintBatch(accounts, mintValue);
+        token.batchMintSameValue(accounts, mintValue);
 
         // check balances
         assertEq(token.balanceOf(holder), mintValue);
         assertEq(token.balanceOf(admin), mintValue);
         vm.stopPrank();
     }
-
     /*//////////////////////////////////////////////////////////////
                            BURN
     //////////////////////////////////////////////////////////////*/
@@ -155,7 +187,7 @@ contract TERC20TestShare is Test {
         vm.stopPrank();
     }
 
-    function testShareCanBurnBatch() internal {
+    function testShareCanBatchBurn() internal {
         // Arrange
         vm.startPrank(admin);
 
@@ -168,7 +200,7 @@ contract TERC20TestShare is Test {
         mintValues[1] = 200;
 
         // Mint tokens first
-        token.mintBatch(holders, mintValues);
+        token.batchMint(holders, mintValues);
         vm.stopPrank();
 
         vm.prank(admin);
@@ -182,10 +214,10 @@ contract TERC20TestShare is Test {
 
         // Events
         vm.expectEmit(true, true, false, true);
-        emit BurnBatch(burner, holders, burnValues);
+        emit BatchBurn(burner, holders, burnValues);
 
         // Act
-        token.burnBatch(holders, burnValues);
+        token.batchBurn(holders, burnValues);
 
         // Assert
         // Check balance
@@ -194,7 +226,7 @@ contract TERC20TestShare is Test {
         vm.stopPrank();
     }
 
-    function testShareCanBurnBatchSingleValue() internal {
+    function testShareCanBurnBatchSameValue() internal {
         // Arrange
         vm.startPrank(admin);
 
@@ -207,7 +239,7 @@ contract TERC20TestShare is Test {
         mintValues[1] = 200;
 
         // Mint tokens first
-        token.mintBatch(holders, mintValues);
+        token.batchMint(holders, mintValues);
         vm.stopPrank();
 
         vm.prank(admin);
@@ -218,10 +250,10 @@ contract TERC20TestShare is Test {
         uint256 burnValue = 100;
         // Events
         vm.expectEmit(true, true, false, true);
-        emit BurnBatch(burner, holders, burnValue);
+        emit BatchBurnSameValue(burner, holders, burnValue);
 
         // Act
-        token.burnBatch(holders, burnValue);
+        token.batchBurnSameValue(holders, burnValue);
 
         // Assert
         // Check balance
@@ -233,8 +265,7 @@ contract TERC20TestShare is Test {
     /*//////////////////////////////////////////////////////////////
                           Invalid Parameters
     //////////////////////////////////////////////////////////////*/
-
-    function testShareCannotBurnBatchIfInvalidParameters() internal {
+    function testShareCannotBatchBurnIfInvalidParameters() internal {
         // Arrange
         vm.startPrank(admin);
 
@@ -247,7 +278,7 @@ contract TERC20TestShare is Test {
         mintValues[1] = 200;
 
         // Mint tokens first
-        token.mintBatch(holders, mintValues);
+        token.batchMint(holders, mintValues);
         vm.stopPrank();
 
         vm.prank(admin);
@@ -261,19 +292,22 @@ contract TERC20TestShare is Test {
         vm.expectRevert(
             abi.encodeWithSelector(Burn_AccountsValueslengthMismatch.selector)
         );
-        token.burnBatch(holders, burnValues);
+        token.batchBurn(holders, burnValues);
+        vm.expectRevert(abi.encodeWithSelector(Burn_EmptyAccounts.selector));
+        holders = new address[](0);
+        token.batchBurn(holders, burnValues);
 
         vm.expectRevert(abi.encodeWithSelector(Burn_EmptyAccounts.selector));
         holders = new address[](0);
-        token.burnBatch(holders, burnValues);
+        token.batchBurn(holders, burnValues);
 
-        // Single Value
+        // Same value
         vm.expectRevert(abi.encodeWithSelector(Burn_EmptyAccounts.selector));
         holders = new address[](0);
-        token.burnBatch(holders, 100);
+        token.batchBurnSameValue(holders, 100);
     }
 
-    function testShareCannotMintBatchIfInvalidParameters() internal {
+    function testShareCannotBatchMintIfInvalidParameters() internal {
         // Arrange
         vm.prank(admin);
         token.grantRole(MINTER_ROLE, minter);
@@ -289,20 +323,20 @@ contract TERC20TestShare is Test {
         vm.expectRevert(
             abi.encodeWithSelector(Mint_AccountsValueslengthMismatch.selector)
         );
-        token.mintBatch(accounts, values);
+        token.batchMint(accounts, values);
         accounts = new address[](0);
         vm.expectRevert(abi.encodeWithSelector(Mint_EmptyAccounts.selector));
-        token.mintBatch(accounts, values);
+        token.batchMint(accounts, values);
 
-        // Single Value
+        // Same Value
         vm.expectRevert(abi.encodeWithSelector(Mint_EmptyAccounts.selector));
-        token.mintBatch(accounts, 100);
+        token.batchMintSameValue(accounts, 100);
     }
 
     /*//////////////////////////////////////////////////////////////
                            Access Control
     //////////////////////////////////////////////////////////////*/
-    function testShareAttackerCannotBurnAndBurnBatch() internal {
+    function testShareAttackerCannotBurnAndBatchBurn() internal {
         // Arrange
         vm.startPrank(admin);
 
@@ -315,7 +349,7 @@ contract TERC20TestShare is Test {
         mintValues[1] = 200;
 
         // Mint tokens first
-        token.mintBatch(holders, mintValues);
+        token.batchMint(holders, mintValues);
         vm.stopPrank();
 
         vm.prank(admin);
@@ -336,8 +370,8 @@ contract TERC20TestShare is Test {
                 BURNER_ROLE
             )
         );
-        token.burnBatch(holders, burnValues);
-        //Single Value
+        token.batchBurn(holders, burnValues);
+        //Same Value
         vm.expectRevert(
             abi.encodeWithSelector(
                 AccessControlUnauthorizedAccount.selector,
@@ -345,7 +379,7 @@ contract TERC20TestShare is Test {
                 BURNER_ROLE
             )
         );
-        token.burnBatch(holders, 100);
+        token.batchBurnSameValue(holders, 100);
         // burn
         vm.expectRevert(
             abi.encodeWithSelector(
@@ -357,7 +391,7 @@ contract TERC20TestShare is Test {
         token.burn(holder, 100);
     }
 
-    function testShareAttackerCannotMintAndMintBatch() internal {
+    function testShareAttackerCannotMintAndBatchMint() internal {
         // Arrange
         address[] memory accounts = new address[](2);
         accounts[0] = holder;
@@ -378,7 +412,7 @@ contract TERC20TestShare is Test {
             )
         );
         token.mint(holder, 100);
-        // MintBatch
+        // batchMint
         vm.expectRevert(
             abi.encodeWithSelector(
                 AccessControlUnauthorizedAccount.selector,
@@ -386,8 +420,8 @@ contract TERC20TestShare is Test {
                 MINTER_ROLE
             )
         );
-        token.mintBatch(accounts, values);
-        // MintBatch Single Value
+        token.batchMint(accounts, values);
+        // MintBatch same Value
         vm.expectRevert(
             abi.encodeWithSelector(
                 AccessControlUnauthorizedAccount.selector,
@@ -395,6 +429,6 @@ contract TERC20TestShare is Test {
                 MINTER_ROLE
             )
         );
-        token.mintBatch(accounts, 100);
+        token.batchMintSameValue(accounts, 100);
     }
 }

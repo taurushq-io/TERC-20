@@ -5,7 +5,7 @@
 
 |  File Name  |  SHA-1 Hash  |
 |-------------|--------------|
-| ./lib/TERC20Share.sol | 756d34423f7d8b1cc90f7e77ac23cb39127d0d10 |
+| ./lib/TERC20Share.sol | 407e35e60c1f55da2ed55dc6cd8d07044de963e1 |
 
 
 ### Contracts Description Table
@@ -15,13 +15,8 @@
 |:----------:|:-------------------:|:----------------:|:----------------:|:---------------:|
 |     └      |  **Function Name**  |  **Visibility**  |  **Mutability**  |  **Modifiers**  |
 ||||||
-| **TERC20Share** | Implementation | IERC20, IAccessControl |||
-| └ | burnBatch | Public ❗️ | 🛑  |NO❗️ |
-| └ | burnBatch | Public ❗️ | 🛑  |NO❗️ |
-| └ | burn | Public ❗️ | 🛑  |NO❗️ |
-| └ | mintBatch | Public ❗️ | 🛑  |NO❗️ |
-| └ | mintBatch | Public ❗️ | 🛑  |NO❗️ |
-| └ | mint | Public ❗️ | 🛑  |NO❗️ |
+| **TERC20Share** | Implementation | IERC20, IAccessControl, TERC20ShareMint, TERC20ShareBurn |||
+| └ | version | Public ❗️ |   |NO❗️ |
 
 
 ### Legend

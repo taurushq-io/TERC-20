@@ -5,7 +5,7 @@
 
 |  File Name  |  SHA-1 Hash  |
 |-------------|--------------|
-| ./TERC20Standalone.sol | 32b1195f3e0f379702e98ed423f637ce0b3f2a3e |
+| ./TERC20Standalone.sol | fcd393105ed9a752c9a39e70fa4023b6dc0a98ac |
 
 
 ### Contracts Description Table
@@ -15,15 +15,10 @@
 |:----------:|:-------------------:|:----------------:|:----------------:|:---------------:|
 |     └      |  **Function Name**  |  **Visibility**  |  **Mutability**  |  **Modifiers**  |
 ||||||
-| **TERC20Standalone** | Implementation | ERC20, AccessControl, TERC20Share |||
+| **TERC20Standalone** | Implementation | ERC20, AccessControl, TERC20Share, TERC20StandaloneBurn, TERC20StandaloneMint |||
 | └ | <Constructor> | Public ❗️ | 🛑  | ERC20 |
 | └ | decimals | Public ❗️ |   |NO❗️ |
-| └ | mint | Public ❗️ | 🛑  | onlyRole |
-| └ | mintBatch | Public ❗️ | 🛑  | onlyRole |
-| └ | mintBatch | Public ❗️ | 🛑  | onlyRole |
-| └ | burn | Public ❗️ | 🛑  | onlyRole |
-| └ | burnBatch | Public ❗️ | 🛑  | onlyRole |
-| └ | burnBatch | Public ❗️ | 🛑  | onlyRole |
+| └ | version | Public ❗️ |   |NO❗️ |
 | └ | hasRole | Public ❗️ |   |NO❗️ |
 
 

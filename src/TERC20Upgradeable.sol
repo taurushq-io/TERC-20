@@ -5,12 +5,18 @@ import "OZUpgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "OZUpgradeable/access/AccessControlUpgradeable.sol";
 import "OZUpgradeable/proxy/utils/Initializable.sol";
 import "./lib/TERC20Share.sol";
-
+import "./lib/upgradeable/TERC20UpgradeableBurn.sol";
+import "./lib/upgradeable/TERC20UpgradeableMint.sol";
+/**
+ * @title TERC20 for an upgradeable deployment, with a compatible proxy (Transparent or Beacon)
+ */
 contract TERC20Upgradeable is
     Initializable,
     ERC20Upgradeable,
     AccessControlUpgradeable,
-    TERC20Share
+    TERC20Share,
+    TERC20UpgradeableBurn,
+    TERC20UpgradeableMint
 {
     /* ============ ERC-7201 ============ */
     // keccak256(abi.encode(uint256(keccak256("TERC20Upgradeable.storage.main")) - 1)) & ~bytes32(uint256(0xff))
@@ -60,150 +66,27 @@ contract TERC20Upgradeable is
      * @notice Returns the number of decimals used to get its user representation.
      * @inheritdoc ERC20Upgradeable
      */
-    function decimals() public view virtual override returns (uint8) {
+    function decimals()
+        public
+        view
+        virtual
+        override(ERC20Upgradeable)
+        returns (uint8)
+    {
         TERC20UpgradeableStorage storage $ = _getTERC20UpgradeableStorage();
         return $._decimals;
     }
 
-    /* ============ Mint ============ */
     /**
-     * @notice  Creates a `value` amount of tokens and assigns them to `account`, by transferring it from address(0)
-     * @param account token receiver
-     * @param value amount of tokens
-     * @dev
-     * See {OpenZeppelin ERC20-_mint}.
-     * Emits a {Mint} event.
-     * Emits a {Transfer} event with `from` set to the zero address (emits inside _mint).
-     *
-     * Requirements:
-     * - `account` cannot be the zero address (check made by _mint).
-     * - The caller must have the `MINTER_ROLE`.
+     * @inheritdoc TERC20Share
      */
-    function mint(
-        address account,
-        uint256 value
-    ) public override onlyRole(MINTER_ROLE) {
-        _mint(account, value);
-        emit Mint(msg.sender, account, value);
-    }
-
-    /**
-     *
-     * @notice batch version of {mint}
-     * @dev
-     * Emits a {MintBatch} event.
-     * Requirements:
-     * - `accounts` cannot be empty
-     * - `accounts` and `values` must have the same length
-     * - `accounts` cannot contain a zero address (check made by _mint).
-     * - the caller must have the `MINTER_ROLE`.
-     */
-    function mintBatch(
-        address[] calldata accounts,
-        uint256[] calldata values
-    ) public override onlyRole(MINTER_ROLE) {
-        if (accounts.length == 0) {
-            revert Mint_EmptyAccounts();
-        }
-        // We do not check that values is not empty since
-        // this require will throw an error in this case.
-        if (bool(accounts.length != values.length)) {
-            revert Mint_AccountsValueslengthMismatch();
-        }
-        for (uint256 i = 0; i < accounts.length; ++i) {
-            _mint(accounts[i], values[i]);
-        }
-        emit MintBatch(msg.sender, accounts, values);
-    }
-
-    /**
-     *
-     * @notice batch version of {mint}
-     * @dev
-     * Emits a {MintBatch} event.
-     * Requirements:
-     * - `accounts` cannot be empty
-     * - `accounts` cannot contain a zero address (check made by _mint).
-     * - the caller must have the `MINTER_ROLE`.
-     */
-    function mintBatch(
-        address[] calldata accounts,
-        uint256 value
-    ) public override onlyRole(MINTER_ROLE) {
-        require(accounts.length != 0, Mint_EmptyAccounts());
-        for (uint256 i = 0; i < accounts.length; ++i) {
-            _mint(accounts[i], value);
-        }
-        emit MintBatch(msg.sender, accounts, value);
-    }
-
-    /* ============ Burn ============ */
-    /**
-     * @notice Destroys a `value` amount of tokens from `account`, by transferring it to address(0).
-     * @param account token holder
-     * @param value amount of tokens to burn
-     * @dev
-     * See {ERC20-_burn}
-     * Emits a {Burn} event
-     * Emits a {Transfer} event with `to` set to the zero address  (emits inside _burn).
-     * Requirements:
-     * - the caller must have the `BURNER_ROLE`.
-     */
-    function burn(
-        address account,
-        uint256 value
-    ) public override onlyRole(BURNER_ROLE) {
-        _burn(account, value);
-        emit Burn(msg.sender, account, value);
-    }
-
-    /**
-     *
-     * @notice batch version of {burn}.
-     * @dev
-     * Emits a {BurnBatch} event
-     * Requirements:
-     * - `accounts` cannot be empty
-     * - `accounts` and `values` must have the same length
-     * - the caller must have the `BURNER_ROLE`.
-     */
-    function burnBatch(
-        address[] calldata accounts,
-        uint256[] calldata values
-    ) public override onlyRole(BURNER_ROLE) {
-        if (accounts.length == 0) {
-            revert Burn_EmptyAccounts();
-        }
-        // We do not check that values is not empty since
-        // this require will throw an error in this case.
-        if (bool(accounts.length != values.length)) {
-            revert Burn_AccountsValueslengthMismatch();
-        }
-        for (uint256 i = 0; i < accounts.length; ++i) {
-            _burn(accounts[i], values[i]);
-        }
-        emit BurnBatch(msg.sender, accounts, values);
-    }
-
-    /**
-     *
-     * @notice batch version of {burn}.
-     * @dev
-     * Emits a {BurnBatch} event
-     * Requirements:
-     * - `accounts` cannot be empty
-     * - `accounts` and `values` must have the same length
-     * - the caller must have the `BURNER_ROLE`.
-     */
-    function burnBatch(
-        address[] calldata accounts,
-        uint256 value
-    ) public override onlyRole(BURNER_ROLE) {
-        require(accounts.length != 0, Burn_EmptyAccounts());
-        for (uint256 i = 0; i < accounts.length; ++i) {
-            _burn(accounts[i], value);
-        }
-        emit BurnBatch(msg.sender, accounts, value);
+    function version()
+        public
+        pure
+        override(TERC20Share)
+        returns (string memory)
+    {
+        return TERC20Share.VERSION;
     }
 
     /* ============ ACCESS CONTROL ============ */

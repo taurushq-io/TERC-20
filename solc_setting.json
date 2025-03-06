@@ -1,0 +1,10 @@
+{
+    "remappings": [ 
+      "OZ/=lib/openzeppelin-contracts/contracts/",
+      "OZUpgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/"
+
+ ], "optimizer":{
+    "enabled": true,
+    "runs": 200
+  }
+}
