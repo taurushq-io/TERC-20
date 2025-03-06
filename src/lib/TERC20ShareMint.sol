@@ -57,7 +57,7 @@ abstract contract TERC20ShareMint {
      * Emits a {Transfer} event with `from` set to the zero address (emits inside _mint).
      *
      * Requirements:
-     * - `account` cannot be the zero address (check made by _mint).
+     * - `account` cannot be the zero address (check made by _mint, error ERC20InvalidReceiver).
      * - The caller must have the `MINTER_ROLE`.
      */
     function mint(address account, uint256 value) public virtual;
@@ -72,7 +72,7 @@ abstract contract TERC20ShareMint {
      * Requirements:
      * - `accounts` cannot be empty (error Mint_EmptyAccounts)
      * - `accounts` and `values` must have the same length (error Mint_AccountsValueslengthMismatch)
-     * - `accounts` cannot contain a zero address (check made by _mint).
+     * - `accounts` cannot contain a zero address (check made by _mint, error ERC20InvalidReceiver).
      * - the caller must have the `MINTER_ROLE` (error AccessControlUnauthorizedAccount).
      */
     function batchMint(
@@ -89,7 +89,7 @@ abstract contract TERC20ShareMint {
      * Emits a {BatchMintSameValue} event.
      * Requirements:
      * - `accounts` cannot be empty (error Mint_EmptyAccounts)
-     * - `accounts` cannot contain a zero address (check made by _mint).
+     * - `accounts` cannot contain a zero address (check made by _mint, error ERC20InvalidReceiver).
      * -  the caller must have the `MINTER_ROLE` (error AccessControlUnauthorizedAccount)
      */
     function batchMintSameValue(

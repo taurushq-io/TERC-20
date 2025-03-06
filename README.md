@@ -1,9 +1,32 @@
 ## TERC-20
 
-This project contains two basic ERC-20 tokens:
+[ERC-20](https://eips.ethereum.org/EIPS/eip-20) is the main standard to represent fungibles tokens on Ethereum and EVM blockchain. This ERC defines the functions, events and the behavior of a token implementing this interface.
 
-- `TERC20Standalone` for an immutable deployment, without proxy
+One of the main library used to build ERC-20 is OpenZeppelin. This library provides already all functions which are part of the standard. Nevertheless, OpenZeppelin does not provide a deployable contract, but only an [abstract](https://docs.soliditylang.org/en/v0.8.28/contracts.html#abstract-contracts) contract which can be used to build other contract though inheritance but cannot be deployed directly on the blockchain. You can find more information about their implementation in their [documentation](https://docs.openzeppelin.com/contracts/5.x/erc20) 
+
+TERC-20 aims to provides a minimal deployable implementation for standalone deployment (immutable) and proxy deployment (upgradeable) which allows the issueur (and only him) to mint and burn tokens. 
+
+TERC-20 exists in two different version: standalone and proxy:
+
+- `TERC20Standalone` for an immutable deployment, without proxy.
+
+See [./TERC20Standalone](./src/TERC20Standalone.sol)
+
 - `TERC20Upgradeable` for an upgradeable deployment, with a compatible proxy (Transparent or Beacon)
+
+See [./TERC20Upgradeable](./src/TERC20Upgradeable.sol)
+
+## ERC
+
+In addition to ERC-20, TERC-20 uses the following ERCs
+
+- [ERC-6093](https://eips.ethereum.org/EIPS/eip-6093): Custom errors for ERC-20 tokens (through OpenZeppelin)
+- [eip-3643](https://eips.ethereum.org/EIPS/eip-3643): implements the following functions:
+  - version()
+  - mint(), burn()
+  - batchMint, batchBurn()
+- TERC20Upgradeable only: 
+  - implements [ERC-7201](https://eips.ethereum.org/EIPS/eip-7201) to manage the storage location.
 
 ## Common features
 
@@ -15,10 +38,14 @@ These ERC-20 tokens have the following characteristics:
 
 - Two mint batch functions only accessible with the MINTER role
 
+Interface defined in [./TERC20ShareMint](./src/lib/TERC20ShareMint.sol)
+
 **Burn**
 
 - A burn function only accessible with the BURNER role
 - Two burn in batch functions only accessible with the BURNER role
+
+Interface defined in [./TERC20ShareBurn](./src/lib/TERC20ShareBurn.sol)
 
 **ERC20**
 
@@ -297,7 +324,25 @@ See [Solidity Coverage in VS Code with Foundry](https://mirror.xyz/devanon.eth/R
 
 [https://book.getfoundry.sh/](https://book.getfoundry.sh/)
 
+## FAQ
 
+> Can we put the smart contract in a pause state ?
+
+No, it is not possible to put the contract in a pause state. However, to desactivate the contract, it is possible to burn all tokens and renounce the control on the smart contract. 
+
+If you are interested by this feature, [CMTAT](https://github.com/CMTA/CMTAT) could be more suitable.
+
+> Is the contracts compatible with [ERC-2771](https://eips.ethereum.org/EIPS/eip-2771) (gasless / MetaTx transaction)/
+
+No, TERC-20 does not implement this ERC. If you are interested by this feature, [CMTAT](https://github.com/CMTA/CMTAT) could be more suitable.
+
+> Can we change the symbol, name or decimals after deployment ?
+
+In standalone deployment (immutable), all these information can not be changed.
+
+With a proxy deployment, it is still possible to change it by deploying a new implementation which allows to set these information, but it requires extra work.
+
+if you want the possibility to update these information, [CMTAT](https://github.com/CMTA/CMTAT) could be more suitable since it allows more flexibility.
 
 ## Intellectual property
 
