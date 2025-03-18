@@ -182,7 +182,7 @@ Please see [SECURITY.md](./SECURITY.md).
 
 ### Audit
 
-Report made by [SecFault Security](https://secfault-security.com)
+see [report](doc/audit/SecfaultSecurity_Report_Review_ERC20_v1.0.pdf) made by [SecFault Security](https://secfault-security.com)
 
 See our comment here [report file](./doc/audit/secfault-report.md)
 
